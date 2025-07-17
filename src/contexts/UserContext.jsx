@@ -1,5 +1,7 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 
+import { useAuth } from './AuthContext';
+
 const UserContext = createContext(undefined);
 
 export const useUser = () => {
@@ -11,9 +13,11 @@ export const useUser = () => {
 };
 
 export const UserProvider = ({ children }) => {
+  const { user: authUser } = useAuth();
+  
   const [user, setUser] = useState({
-    name: 'Alex Johnson',
-    email: 'alex@example.com',
+    name: authUser?.name || 'Alex Johnson',
+    email: authUser?.email || 'alex@example.com',
     title: 'Frontend Developer',
     bio: 'Passionate frontend developer with 3+ years of experience building modern web applications.',
     skills: [
@@ -93,6 +97,17 @@ export const UserProvider = ({ children }) => {
     level: 5,
     theme: 'default',
   });
+
+  // Update user data when auth user changes
+  React.useEffect(() => {
+    if (authUser) {
+      setUser(prev => ({
+        ...prev,
+        name: authUser.name,
+        email: authUser.email,
+      }));
+    }
+  }, [authUser]);
 
   const updateUser = (data) => {
     setUser(prev => ({ ...prev, ...data }));

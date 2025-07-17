@@ -60,6 +60,7 @@ export const AuthProvider = ({ children }) => {
         id: Date.now().toString(),
         email,
         name,
+        profilePicture: null,
         createdAt: new Date().toISOString(),
       };
       
